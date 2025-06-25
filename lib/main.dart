@@ -1,8 +1,22 @@
-import 'package:flutter/material.dart';
-import 'screens/home_screen.dart';          // ✅ Use HomeScreen instead of initialRoute
-import 'theme/app_colors.dart';            // ✅ Custom colors
+// ARQUIVO: lib/main.dart (versão com Firebase)
 
-void main() {
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
+import 'package:flutter/material.dart';
+import 'screens/home_screen.dart';
+import 'screens/auth_screen.dart';
+import 'package:weather/weather.dart';
+
+// A função 'main' agora é 'async' para poder esperar o Firebase inicializar
+void main() async {
+  // Essas duas linhas são necessárias para garantir que o Firebase inicialize
+  // antes de o aplicativo rodar.
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
   runApp(const MyApp());
 }
 
@@ -14,9 +28,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'RainSafe',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primaryColor: Colors.lightBlueAccent, // Azul claro
-        scaffoldBackgroundColor: Colors.white, // Fundo branco
+      theme: ThemeData( // Seu tema continua aqui, sem alterações...
+        primaryColor: Colors.lightBlueAccent,
+        scaffoldBackgroundColor: Colors.white,
         appBarTheme: const AppBarTheme(
           backgroundColor: Colors.lightBlueAccent,
           elevation: 0,
@@ -32,7 +46,7 @@ class MyApp extends StatelessWidget {
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(12)),
-            borderSide: BorderSide(color: Colors.amberAccent), // foco amarelo
+            borderSide: BorderSide(color: Colors.amberAccent),
           ),
         ),
         textTheme: const TextTheme(
@@ -41,8 +55,8 @@ class MyApp extends StatelessWidget {
         ),
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.amberAccent, // Amarelo claro
-            foregroundColor: Colors.black, // texto escuro
+            backgroundColor: Colors.amberAccent,
+            foregroundColor: Colors.black,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10),
             ),
@@ -54,8 +68,19 @@ class MyApp extends StatelessWidget {
           unselectedItemColor: Colors.black54,
         ),
       ),
-
-      home: const HomeScreen(), // ✅ Now using HomeScreen with bottom nav
+      // AQUI ESTÁ A MUDANÇA PRINCIPAL:
+      // Usamos um StreamBuilder para ser o "porteiro" do nosso app.
+      home: StreamBuilder<User?>(
+        stream: FirebaseAuth.instance.authStateChanges(),
+        builder: (context, snapshot) {
+          // Se o snapshot tem dados, o usuário está LOGADO.
+          if (snapshot.hasData) {
+            return const HomeScreen(); // Mostra a tela principal
+          }
+          // Se não, o usuário está DESLOGADO.
+          return AuthScreen(); // Mostra a tela de login/cadastro
+        },
+      ),
     );
   }
 }

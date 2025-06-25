@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "157640792419",
+    "project_id": "rainsafe-ffa15",
+    "storage_bucket": "rainsafe-ffa15.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:157640792419:android:332e6fa39f7c62669c1b56",
+        "android_client_info": {
+          "package_name": "com.example.rainsafe"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAVP5FUDPU88zyC03ec9ewgkgAOvYy9Sko"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
